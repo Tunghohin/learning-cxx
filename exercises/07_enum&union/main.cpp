@@ -33,15 +33,19 @@ ColorEnum convert_by_pun(Color c) {
     };
 
     TypePun pun;
+    pun.c = c;
     // TODO: 补全类型双关转换
 
     return pun.e;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     ASSERT(convert_by_pun(Color::Red) == COLOR_RED, "Type punning conversion");
-    ASSERT(convert_by_pun(Color::Green) == COLOR_GREEN, "Type punning conversion");
-    ASSERT(convert_by_pun(Color::Yellow) == COLOR_YELLOW, "Type punning conversion");
-    ASSERT(convert_by_pun(Color::Blue) == COLOR_BLUE, "Type punning conversion");
+    ASSERT(convert_by_pun(Color::Green) == COLOR_GREEN,
+           "Type punning conversion");
+    ASSERT(convert_by_pun(Color::Yellow) == COLOR_YELLOW,
+           "Type punning conversion");
+    ASSERT(convert_by_pun(Color::Blue) == COLOR_BLUE,
+           "Type punning conversion");
     return 0;
 }

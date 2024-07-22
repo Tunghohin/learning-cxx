@@ -1,42 +1,72 @@
 #include "../exercise.h"
 
-// READ: 移动构造函数 <https://zh.cppreference.com/w/cpp/language/move_constructor>
-// READ: 移动赋值 <https://zh.cppreference.com/w/cpp/language/move_assignment>
-// READ: 运算符重载 <https://zh.cppreference.com/w/cpp/language/operators>
+// READ: 移动构造函数
+// <https://zh.cppreference.com/w/cpp/language/move_constructor> READ: 移动赋值
+// <https://zh.cppreference.com/w/cpp/language/move_assignment> READ: 运算符重载
+// <https://zh.cppreference.com/w/cpp/language/operators>
 
 class DynFibonacci {
-    size_t *cache;
+    size_t* cache;
     int cached;
 
 public:
     // TODO: 实现动态设置容量的构造器
-    DynFibonacci(int capacity): cache(new ?), cached(?) {}
+    DynFibonacci(int capacity) : cache(new size_t[capacity]), cached(3) {
+        cache[0] = 0;
+        cache[1] = cache[2] = 1;
+    }
 
     // TODO: 实现移动构造器
-    DynFibonacci(DynFibonacci &&other) noexcept = delete;
+    DynFibonacci(DynFibonacci&& other) noexcept {
+        if (&other == this) {
+            return;
+        }
+        cached = other.cached;
+        other.cached = 0;
+        cache = other.cache;
+        other.cache = nullptr;
+    };
 
     // TODO: 实现移动赋值
     // NOTICE: ⚠ 注意移动到自身问题 ⚠
-    DynFibonacci &operator=(DynFibonacci &&other) noexcept = delete;
+    DynFibonacci& operator=(DynFibonacci&& other) noexcept {
+        if (&other == this) {
+            return *this;
+        }
+        cached = other.cached;
+        other.cached = 0;
+        cache = other.cache;
+        other.cache = nullptr;
+        return *this;
+    };
 
     // TODO: 实现析构器，释放缓存空间
-    ~DynFibonacci();
+    ~DynFibonacci() {
+        cached = 0;
+        delete[] cache;
+        cache = nullptr;
+    };
 
     // TODO: 实现正确的缓存优化斐波那契计算
     size_t operator[](int i) {
-        for (; false; ++cached) {
+        for (; cached <= i; ++cached) {
             cache[cached] = cache[cached - 1] + cache[cached - 2];
         }
         return cache[i];
     }
 
-    // NOTICE: 不要修改这个方法
-    bool is_alive() const {
-        return cache;
+    size_t operator[](int i) const {
+        if (i <= cached) {
+            return cache[i];
+        }
+        ASSERT(false, "i out of range");
     }
+
+    // NOTICE: 不要修改这个方法
+    bool is_alive() const { return cache; }
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     DynFibonacci fib(12);
     ASSERT(fib[10] == 55, "fibonacci(10) should be 55");
 
